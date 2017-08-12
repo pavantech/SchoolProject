@@ -27,7 +27,7 @@
 		<property name="persistenceUnitName" value="myJpaPersistenceUnit" />
 		<property name="packagesToScan">
 			<list>
-				<value>com.schooleducation.model</value>
+				<value>com.studentproject.model</value>
 			</list>
 		</property>
 		<property name="jpaProperties">
@@ -42,6 +42,6 @@
 	<bean id="txManager" class="org.springframework.orm.jpa.JpaTransactionManager">
 		<property name="entityManagerFactory" ref="entityManagerFactoryBean" />
 	</bean>
-	<bean class=" com.schooleducation.DAO.RegisterDAO" />
+	<bean class=" com.studentproject.DAO.RegisterDAO" />
 	<tx:annotation-driven transaction-manager="txManager" />
 </beans> 

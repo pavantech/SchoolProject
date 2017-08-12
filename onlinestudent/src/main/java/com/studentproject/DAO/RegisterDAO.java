@@ -1,4 +1,4 @@
-package com.schooleducation.DAO;
+package com.studentproject.DAO;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 
-import com.schooleducation.model.Register;
+import com.studentproject.model.Register;
 
 @Repository
 @Transactional
