@@ -33,4 +33,6 @@
 		</property>
 	</bean>
 	<bean id="RegisterValidator" class="com.studentproject.validator.RegisterValidator" />
+	<bean id="LoginValidator" class="com.studentproject.validator.LoginValidator" />
+	 <mvc:resources mapping="/asserts/**" location="/asserts/"/>
 </beans> 

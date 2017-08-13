@@ -1,11 +1,13 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
     <title>Spring MVC Form Handling</title>
+    <link href="<c:url value="/asserts/css/main.css" />" rel="stylesheet">
 </head>
 <body>
 
-<h2>Student Information</h2>
+<h2>Register</h2>
 <form:form method="POST" action="addStudent" modelAttribute="userForm">
   
    <table>

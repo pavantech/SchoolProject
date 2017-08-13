@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
 @Table(name="register")
 @Entity
 public class Register implements Serializable {
@@ -26,9 +27,9 @@ public class Register implements Serializable {
 	  private String lastname;
 	  @Column(name="email")
 	  private String email;
-	 
 	  @Column(name="phone")
 	  private String phone;
+	  
 	public String getUsername() {
 		return username;
 	}
@@ -38,6 +39,7 @@ public class Register implements Serializable {
 	public String getPassword() {
 		return password;
 	}
+	
 	public void setPassword(String password) {
 		this.password = password;
 	}
@@ -59,15 +61,14 @@ public class Register implements Serializable {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public String getPhone() {
+
+
+	public String getPhone()
+	{
 		return phone;
 	}
 	public void setPhone(String phone) {
 		this.phone = phone;
-	}
-	
-	
-	  
-	  
+	}	  
 
 }
