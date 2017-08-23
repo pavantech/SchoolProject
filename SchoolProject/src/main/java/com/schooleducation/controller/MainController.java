@@ -1,5 +1,6 @@
 package com.schooleducation.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.slf4j.LoggerFactory;
@@ -9,6 +10,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.validation.BindingResult;
@@ -18,13 +21,17 @@ import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.beans.factory.annotation.Autowired;
 
+
 import com.schooleducation.DAO.RegisterDAO;
+import com.schooleducation.Threads.BuildThread;
 import com.schooleducation.model.Login;
 import com.schooleducation.model.Register;
 import com.schooleducation.validator.RegisterValidator;
 
 @Controller
 public class MainController {
+	private BuildThread build;
+	private boolean isFirstReq = false;
 	
 	@Autowired
 	RegisterDAO redao;
@@ -87,6 +94,29 @@ public class MainController {
 		return  "index";
 
 	}
+	 @RequestMapping("/ajax")
+	    public ModelAndView helloAjaxTest() {
+	        return new ModelAndView("ajax", "message", "Crunchify Spring MVC with Ajax and JQuery Demo..");
+	    }
+	
+	
+	  
+	 @RequestMapping(value = "/ajaxtest", method = RequestMethod.GET)
+	    public @ResponseBody
+	    String getTime() throws IOException {
+		 System.out.println("enter in to build");
+		 if (!isFirstReq) {
+			 System.out.println("Started build");
+			isFirstReq = true;
+			build = new com.schooleducation.Threads.BuildThread();
+			Thread innThread = new Thread(build);
+			innThread.start();
+		}
+		 
+		 
+		 
+		 return build.getBuildThread().toString();
+	 }
 	
 	@RequestMapping(value = "/request", method = RequestMethod.POST)
 	public String login(ModelMap model, @ModelAttribute("loginForm") @Validated Login login, 

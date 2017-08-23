@@ -77,6 +77,7 @@ public class HomeControllerTest {
             //.andExpect(redirectedUrl("index.jsp"));
 
     }
+    
     @Test
     public void testcreateRegister() throws Exception {
     	// when(redo.registerUser(any(Register.class)))
