@@ -2,6 +2,7 @@ package com.schooleducation.controller;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -21,7 +22,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.beans.factory.annotation.Autowired;
 
-
+import com.core.singletons.BuildStatus;
 import com.schooleducation.DAO.RegisterDAO;
 import com.schooleducation.Threads.BuildThread;
 import com.schooleducation.model.Login;
@@ -32,12 +33,13 @@ import com.schooleducation.validator.RegisterValidator;
 public class MainController {
 	private BuildThread build;
 	private boolean isFirstReq = false;
+	private ThreadGroup buildGroup = new ThreadGroup("VitehcBuild");
 	
 	@Autowired
 	RegisterDAO redao;
 	
 	String purpose;
-	
+	int buildCount;
 	@Autowired
 	   @Qualifier("RegisterValidator")
 	   private Validator registervalidator;
@@ -101,22 +103,82 @@ public class MainController {
 	
 	
 	  
-	 @RequestMapping(value = "/ajaxtest", method = RequestMethod.GET)
+	 /*@RequestMapping(value = "/ajaxtest/{name}", method = RequestMethod.GET)
 	    public @ResponseBody
-	    String getTime() throws IOException {
+	    String getTime(@PathVariable String name) throws IOException {
 		 System.out.println("enter in to build");
-		 if (!isFirstReq) {
+		 //if (!isFirstReq) {
 			 System.out.println("Started build");
 			isFirstReq = true;
-			build = new com.schooleducation.Threads.BuildThread();
+			build = new BuildThread(name);
 			Thread innThread = new Thread(build);
 			innThread.start();
-		}
+		//}
 		 
 		 
 		 
 		 return build.getBuildThread().toString();
-	 }
+	 }*/
+	 @RequestMapping(value = "/startBuild/{name}", method = RequestMethod.GET)
+		public @ResponseBody 
+		String startBuild(@PathVariable String name) throws IOException, InterruptedException {
+			System.out.println(name);
+		
+			String buildName=name+buildCount;
+				//isFirstReq = true;
+			    int active = Thread.activeCount();
+	            System.out.println("currently active threads: " + active);
+	            //Thread.sleep(2000l);
+				build = new BuildThread(buildName);
+				Thread innThread = new Thread(buildGroup,build,buildName);
+				buildCount++;
+				innThread.start();
+				System.out.println("Main thread: " + innThread.getName() + "(" + innThread.getId() + ")");
+			System.out.println(build.buildId());
+			BuildStatus buildStatus = BuildStatus.getBuildStatuIns();
+			 Map<String, StringBuffer> mapBuildStatus = buildStatus.getMapBuildStatus();
+			 //String threadName = Thread.currentThread().getName();
+			 System.out.println("checking Before status");
+			
+
+			 for (String key: mapBuildStatus.keySet()) {
+			     System.out.println("key : " + key);
+			    
+			 }
+			return  "Build Started with name : "+buildName;
+		}
+		
+		@RequestMapping(value = "/getBuildStatus/{buildName}", method = RequestMethod.GET)
+		public @ResponseBody 
+		String getBuildStatus(@PathVariable String buildName) throws IOException, InterruptedException {
+			
+			BuildStatus buildStatus = BuildStatus.getBuildStatuIns();
+			 Map<String, StringBuffer> mapBuildStatus = buildStatus.getMapBuildStatus();
+			 //String threadName = Thread.currentThread().getName();
+			 System.out.println("checking build status");
+			
+
+			 for (String key: mapBuildStatus.keySet()) {
+			     System.out.println("key : " + key);
+			    
+			 }
+			 if (mapBuildStatus.containsKey(buildName)) {
+				
+				return mapBuildStatus.get(buildName).toString();
+			}
+			 else {
+				 return "Invalid Build Name";
+			 }
+			
+			
+			
+		}
+		
+		
+		
+		
+		
+		
 	
 	@RequestMapping(value = "/request", method = RequestMethod.POST)
 	public String login(ModelMap model, @ModelAttribute("loginForm") @Validated Login login, 

@@ -3,11 +3,27 @@ package com.schooleducation.Threads;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.core.singletons.BuildStatus;
+
 
 public class BuildThread implements Runnable {
+	private final Logger logger = LoggerFactory.getLogger(BuildThread.class);
 	
-	private StringBuffer buildThread = new StringBuffer();
+	//private StringBuffer buildThread = new StringBuffer();
 	private boolean isBuildStarted = false;
+	public String buildId="";
+	
+	public BuildThread(String buildId)
+	{
+		this.buildId=buildId;
+		
+		
+	}
 	
 	
 
@@ -15,9 +31,13 @@ public class BuildThread implements Runnable {
 	public void run() {
 		
 		try {
+			
+			//System.setProperty("log.name",buildId+".log" );
+			
+			System.out.println("build"+buildId);
 			isBuildStarted= true;
-			String s[]={"cmd.exe /c mvn clean install", null, "new java.io.File(\"H:\\SchoolEducation\")"};
-			executecommad(s);
+			String PATH="H:\\SchoolEducation";
+			executecommad(PATH);
 			//executecommad("cmd.exe /c  H: && cd SchoolEducation && mvn clean install");
 			/*for (int i = 0; i < 10; i++) {
 				Thread.sleep(3000l);
@@ -35,66 +55,50 @@ public class BuildThread implements Runnable {
 	
 	
 	
-	private  void executecommad(String[] cmd)throws Exception
+	private  void executecommad(String PATH)throws Exception
 	 {
 			
 		Process p;
 		String line = "";
 		
-		 p = Runtime.getRuntime().exec("cmd.exe /c mvn clean install", null, new java.io.File("H:\\SchoolEducation"));
+		 p = Runtime.getRuntime().exec("cmd.exe /c mvn clean install", null, new java.io.File(PATH));
 		 
 		 BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
 		 
-		 while ((line = reader.readLine())!= null) {
-			 buildThread.append(line+"<br>");
-			 System.out.println(line);
-			// Thread.sleep(3000l);
-				//logger.info("<br>"+line + "\n");
-				
-			}
-		 
-		 
-		/* BufferedReader reader =
-                 new BufferedReader(new InputStreamReader(p.getInputStream()));*/
-		 
+		 BuildStatus buildStatus = BuildStatus.getBuildStatuIns();
+		 Map<String, StringBuffer> mapBuildStatus = buildStatus.getMapBuildStatus();
+		 String threadName = Thread.currentThread().getName();
 		
-		 /*StringBuffer output = new StringBuffer();
-		
-		 Thread t = new Thread(new Runnable() {
-		 @Override
-		 public void run() {
-		 String str = null;
-		 
-		 try {
-			
-				
-				//p.waitFor();
-				
-
-	                        String line = "";
-				while ((line = reader.readLine())!= null) {
-					output.append("<br>"+line + "\n");
-					logger.info("<br>"+line + "\n");
-					
+		 if (!mapBuildStatus.containsKey(threadName)) {
+			StringBuffer innBuildStatus = new StringBuffer();
+			 while ((line = reader.readLine())!= null) {
+				 innBuildStatus.append(line+"<br>");
+				 mapBuildStatus.put(threadName, innBuildStatus);
+				 Thread.sleep(2000L);
 				}
-				 System.out.println(output.toString());
-		 } catch (IOException e) { 
-		 e.printStackTrace();
+			
+			
+			
+			 
+		}
+		 else {
+			 
 		 }
-		 }});
-		 t.start();*/
+		 
+		 
+	
+		 
+		
 	 }
-
-
-
-	public StringBuffer getBuildThread() {
-		return buildThread;
-	}
 
 
 
 	public boolean isBuildStarted() {
 		return isBuildStarted;
+	}
+	public String buildId()
+	{
+		return buildId;
 	}
 	
 	
